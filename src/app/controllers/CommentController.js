@@ -11,13 +11,6 @@ class CommentController {
 
     const post = await Post.findOne({
       where: { id },
-      // include: [
-      //   {
-      //     model: User,
-      //     as: 'userpost',
-      //     attributes: ['name'],
-      //   },
-      // ],
     });
 
     const comment = await Comment.create({
@@ -25,8 +18,6 @@ class CommentController {
       post_id: id,
       user_id: req.userId,
     });
-
-    // console.log(post);
 
     const userComment = await User.findOne({
       where: { id: req.userId },
