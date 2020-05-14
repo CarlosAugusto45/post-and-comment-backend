@@ -2,6 +2,7 @@ import * as Yup from 'yup';
 import jwt from 'jsonwebtoken';
 
 import User from '../models/User';
+import File from '../models/File';
 import Notification from '../schemas/Notification';
 import authConfig from '../../config/auth';
 
@@ -20,7 +21,16 @@ class SessionController {
 
     const { email, password } = req.body;
 
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({
+      where: { email },
+      include: [
+        {
+          model: File,
+          as: 'avatar',
+          attributes: ['id', 'path', 'url'],
+        },
+      ],
+    });
 
     if (!user) {
       return res.status(400).json({ error: 'User not found' });
@@ -40,7 +50,7 @@ class SessionController {
       });
     }
 
-    const { id, name, first_auth } = user;
+    const { id, name, first_auth, avatar } = user;
 
     return res.json({
       user: {
@@ -48,6 +58,7 @@ class SessionController {
         name,
         email,
         first_auth,
+        avatar,
       },
       token: jwt.sign({ id }, authConfig.secret, {
         expiresIn: authConfig.expiresIn,

@@ -21,7 +21,7 @@ module.exports = {
         allowNull: false,
       },
       first_auth: {
-        type: Sequelize.Date,
+        type: Sequelize.DATE,
         allowNull: true,
       },
       created_at: {
